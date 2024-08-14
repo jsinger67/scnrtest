@@ -4,5 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+cargo = "0.81.0"
+clap = { version = "4.5.15", features = ["derive", "cargo"] }
 env_logger = "0.11.5"
 scnr = { version = "0.1.0", path = "../scnr" }
+
+[profile.release]
+opt-level = 3
+lto = true
+debug = true
