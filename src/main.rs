@@ -34,7 +34,7 @@ static MODES: LazyLock<[ScannerMode; 1]> = LazyLock::new(|| {
             (r">", 23),                         // GT
             (r#""(\\.|[^\\])*""#, 24),          // String
             (r"'(\\'|[^'])*'", 25),             // Raw String
-            (r"/(\\.|[^\\])*/", 26),            // Regex
+            (r"/([.--*]|[^\\])*/", 26),         // Regex
             (r"\(", 27),                        // LParen
             (r"\)", 28),                        // RParen
             (r"\[", 29),                        // LBracket
@@ -92,39 +92,69 @@ static MODES: LazyLock<[ScannerMode; 1]> = LazyLock::new(|| {
 // });
 
 fn main() {
-    env_logger::init();
+    // let serialized = serde_json::to_string(&*MODES).unwrap();
+    // eprintln!("{}", serialized);
 
     let args = CliArgs::parse();
-    let input = std::fs::read_to_string(args.parfile.clone()).unwrap();
+    let input = args
+        .input
+        .as_ref()
+        .map(|f| std::fs::read_to_string(f).unwrap());
 
-    let start = Instant::now();
-    let scanner = ScannerBuilder::new()
-        .add_scanner_modes(&*MODES)
-        .build()
-        .unwrap();
-    println!("Building the scanner took {:?}", start.elapsed());
+    if args.trace {
+        env_logger::init_from_env(
+            env_logger::Env::default().default_filter_or("scnr::internal::scanner_impl=trace"),
+        );
+    } else {
+        env_logger::init();
+    }
 
-    let start = Instant::now();
-    let find_iter = scanner.find_iter(&input);
-    println!(
-        "Creating the FindMatches iterator took {:?}",
-        start.elapsed()
-    );
-    match find_iter {
-        Ok(find_iter) => {
+    let scanner = match args.modes {
+        Some(modes) => {
+            let modes = std::fs::read_to_string(modes).unwrap();
+            let modes: Vec<ScannerMode> = serde_json::from_str(&modes).unwrap();
             let start = Instant::now();
-            let mut count = 0;
-            for ma in find_iter {
-                count += 1;
-                if !args.quiet {
-                    println!("Match: {:?}: '{}'", ma, &input[ma.start()..ma.end()]);
-                }
+            let scanner = ScannerBuilder::new()
+                .add_scanner_modes(&modes)
+                .build()
+                .unwrap();
+            println!("Building the scanner took {:?}", start.elapsed());
+            if args.trace {
+                scanner.trace_compiled_dfa_as_dot(&modes).unwrap();
             }
-            let elapsed_scangen = start.elapsed();
-            println!("Find all {} tokens took {:?}", count, elapsed_scangen);
+            scanner
         }
-        Err(e) => {
-            eprintln!("Error: {}", e);
+        None => {
+            let start = Instant::now();
+            let scanner = ScannerBuilder::new()
+                .add_scanner_modes(&*MODES)
+                .build()
+                .unwrap();
+            println!("Building the scanner took {:?}", start.elapsed());
+            if args.trace {
+                scanner.trace_compiled_dfa_as_dot(&*MODES).unwrap();
+            }
+            scanner
         }
+    };
+
+    let input = args.text.or(input);
+    if let Some(input) = input {
+        let start = Instant::now();
+        let find_iter = scanner.find_iter(&input);
+        println!(
+            "Creating the FindMatches iterator took {:?}",
+            start.elapsed()
+        );
+        let start = Instant::now();
+        let mut count = 0;
+        for ma in find_iter {
+            count += 1;
+            if !args.quiet {
+                println!("Match: {:?}: '{}'", ma, &input[ma.start()..ma.end()]);
+            }
+        }
+        let elapsed_scangen = start.elapsed();
+        println!("Find all {} tokens took {:?}", count, elapsed_scangen);
     }
 }

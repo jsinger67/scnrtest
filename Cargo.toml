@@ -7,7 +7,8 @@ edition = "2021"
 cargo = "0.81.0"
 clap = { version = "4.5.15", features = ["derive", "cargo"] }
 env_logger = "0.11.5"
-scnr = { version = "0.1.0", path = "../scnr" }
+scnr = { version = "0.2.0", path = "../scnr" }
+serde_json = "1.0.125"
 
 [profile.release]
 opt-level = 3
