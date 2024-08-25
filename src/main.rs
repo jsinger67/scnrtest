@@ -120,22 +120,36 @@ fn main() {
                 .unwrap();
             println!("Building the scanner took {:?}", start.elapsed());
             if args.trace {
-                scanner.trace_compiled_dfa_as_dot(&modes).unwrap();
+                scanner.log_compiled_dfas_as_dot(&modes).unwrap();
             }
             scanner
         }
-        None => {
-            let start = Instant::now();
-            let scanner = ScannerBuilder::new()
-                .add_scanner_modes(&*MODES)
-                .build()
-                .unwrap();
-            println!("Building the scanner took {:?}", start.elapsed());
-            if args.trace {
-                scanner.trace_compiled_dfa_as_dot(&*MODES).unwrap();
+        None => match args.patterns {
+            Some(patterns) => {
+                let start = Instant::now();
+                let scanner = ScannerBuilder::new()
+                    .add_patterns(&patterns)
+                    .build()
+                    .unwrap();
+                println!(
+                    "Building the scanner from patterns took {:?}",
+                    start.elapsed()
+                );
+                scanner
             }
-            scanner
-        }
+            None => {
+                let start = Instant::now();
+                let scanner = ScannerBuilder::new()
+                    .add_scanner_modes(&*MODES)
+                    .build()
+                    .unwrap();
+                println!("Building the scanner took {:?}", start.elapsed());
+                if args.trace {
+                    scanner.log_compiled_dfas_as_dot(&*MODES).unwrap();
+                }
+                scanner
+            }
+        },
     };
 
     let input = args.text.or(input);

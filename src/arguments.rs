@@ -21,4 +21,7 @@ pub(crate) struct CliArgs {
     /// Define whether to trace the compiled DFAs
     #[arg(short = 'r', long)]
     pub trace: bool,
+    /// Paterens as a list of strings, optional
+    #[arg(short, long)]
+    pub patterns: Option<Vec<String>>,
 }
