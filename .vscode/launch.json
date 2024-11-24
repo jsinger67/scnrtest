@@ -19,7 +19,7 @@
                     "kind": "bin"
                 }
             },
-            "args": ["../temp/small.par"],
+            "args": ["-p", "./data/parol_1_comment_modes.json", "-n", "-t", "\"  /* *Comment 1* */  /* *Comment 2* */  \""],
             "env": {
                 "RUST_LOG": "trace"
             },

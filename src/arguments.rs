@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-// Scangen test tool
+/// Scangen test tool
 #[derive(Parser)]
 #[command(author, version, about)]
 pub(crate) struct CliArgs {
@@ -24,4 +24,7 @@ pub(crate) struct CliArgs {
     /// Paterens as a list of strings, optional
     #[arg(short, long)]
     pub patterns: Option<Vec<String>>,
+    /// Ouput path for generated automata
+    #[arg(short, long)]
+    pub dot: Option<PathBuf>,
 }

@@ -4,11 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-cargo = "0.81.0"
-clap = { version = "4.5.15", features = ["derive", "cargo"] }
-env_logger = "0.11.5"
-scnr = { version = "0.2.0", path = "../scnr" }
-serde_json = "1.0.125"
+cargo = "0.83.0"
+clap = { version = "4.5.21", features = ["derive", "cargo"] }
+env_logger = "0.11"
+scnr = { version = "0.5.0", path = "../scnr" }
+serde_json = "1.0.133"
 
 [profile.release]
 opt-level = 3

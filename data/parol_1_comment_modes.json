@@ -1,0 +1,9 @@
+[
+  {
+    "name": "INITIAL",
+    "patterns": [
+      { "pattern": "/\\*.*\\*/", "token_type": 4 }
+    ],
+    "transitions": []
+  }
+]
