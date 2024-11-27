@@ -18,7 +18,7 @@ pub(crate) struct CliArgs {
     /// Define whether to print the tokens and other information
     #[arg(short, long)]
     pub quiet: bool,
-    /// Define whether to trace the compiled DFAs
+    /// Define whether to trace the compiled NFAs
     #[arg(short = 'r', long)]
     pub trace: bool,
     /// Paterens as a list of strings, optional
