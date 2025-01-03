@@ -1,0 +1,26 @@
+[
+  {
+    "name": "INITIAL",
+    "patterns": [
+      { "pattern": "\\r\\n|\\r|\\n", "token_type": 1 },
+      { "pattern": "[\\s--\\r\\n]+", "token_type": 2 },
+      { "pattern": "//.*(\\r\\n|\\r|\\n)", "token_type": 3 },
+      { "pattern": "/\\*([.\\r\\n--*]|\\*[^/])*\\*/", "token_type": 4 },
+      { "pattern": "[a-zA-Z_]\\w*", "token_type": 5 },
+      { "pattern": "\"", "token_type": 9 },
+      { "pattern": ".", "token_type": 10 }
+    ],
+    "transitions": []
+  },
+  {
+    "name": "String",
+    "patterns": [
+      { "pattern": "\\[\"\\\\bfnt]", "token_type": 6 },
+      { "pattern": "\\[\\s--\\n\\r]*\\r?\\n", "token_type": 7 },
+      { "pattern": "[^\"\\\\]+", "token_type": 8 },
+      { "pattern": "\"", "token_type": 9 },
+      { "pattern": ".", "token_type": 10 }
+    ],
+    "transitions": []
+  }
+]

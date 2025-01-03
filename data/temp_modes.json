@@ -1,0 +1,13 @@
+[
+  {
+    "name": "INITIAL",
+    "patterns": [
+      { "pattern": "\\\\[\"\\\\bfnt]", "token_type": 6 },
+      { "pattern": "\\\\[\\s--\\n\\r]*\\r?\\n", "token_type": 7 },
+      { "pattern": "[^\"\\\\]+", "token_type": 8 },
+      { "pattern": "\"", "token_type": 9 },
+      { "pattern": ".", "token_type": 10 }
+    ],
+    "transitions": []
+  }
+]
