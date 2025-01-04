@@ -29,7 +29,7 @@ fn main() {
                 .add_scanner_modes(&modes)
                 .build()
                 .unwrap();
-            println!("Building the scanner took {:?}", start.elapsed());
+            println!("Building the scanner from modes took {:?}", start.elapsed());
             if args.trace {
                 scanner.log_compiled_automata_as_dot(&modes).unwrap();
             }

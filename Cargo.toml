@@ -8,9 +8,17 @@ cargo = "0.84.0"
 clap = { version = "4.5.23", features = ["derive", "cargo"] }
 env_logger = "0.11"
 scnr = { version = "0.6.0", path = "../scnr" }
+# scnr = "0.6.0"
 serde_json = "1.0.133"
 
 [profile.release]
 opt-level = 3
 lto = true
 debug = true
+
+[dev-dependencies]
+criterion = "0.5.1"
+
+[[bench]]
+name = "benchmark"
+harness = false
