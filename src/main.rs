@@ -7,7 +7,7 @@ use scnr::{ScannerBuilder, ScannerMode};
 
 fn main() {
     println!(
-        "args: cargo run --release -- {}",
+        "cargo run --release -- {}",
         env::args_os()
             .skip(1)
             .map(|arg0| arg0.to_string_lossy().into_owned())

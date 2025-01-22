@@ -1,5 +1,9 @@
+mod v1_veryl_scanner;
+
 use criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput};
-use std::{sync::LazyLock, time::Duration};
+use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use std::{cell::RefCell, sync::LazyLock, time::Duration};
+use v1_veryl_scanner::{MAX_K, SCANNERS, SCANNER_0, SCANNER_1, SCANNER_2, TERMINALS};
 
 use scnr::{Scanner, ScannerBuilder, ScannerMode};
 
@@ -30,6 +34,30 @@ fn build_scanner(c: &mut Criterion) {
     });
 }
 
+fn build_scanner_v1(c: &mut Criterion) {
+    c.bench_function("build_scanner_v1", |b| {
+        b.iter(|| {
+            let _tokenizers = black_box(vec![
+                ScannerConfig::new(
+                    "INITIAL",
+                    Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
+                    &[],
+                ),
+                ScannerConfig::new(
+                    "Embed",
+                    Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
+                    &[],
+                ),
+                ScannerConfig::new(
+                    "Generic",
+                    Tokenizer::build(TERMINALS, SCANNER_2.0, SCANNER_2.1).unwrap(),
+                    &[],
+                ),
+            ]);
+        });
+    });
+}
+
 fn find_iter(c: &mut Criterion) {
     c.bench_function("find_iter", |b| {
         b.iter(|| {
@@ -44,7 +72,24 @@ fn run_scanner(c: &mut Criterion) {
     group.bench_function("scan", |b| {
         b.iter(|| {
             for ma in SCANNER.find_iter(INPUT) {
+                assert_ne!(ma.token_type(), 118, "Invalid token found: {:?}", ma);
                 black_box(ma);
+            }
+        });
+    });
+}
+
+fn run_scanner_v1(c: &mut Criterion) {
+    let mut group = c.benchmark_group("throughput");
+    group.throughput(Throughput::Bytes(INPUT.len() as u64));
+    group.bench_function("scan_v1", |b| {
+        b.iter(|| {
+            let token_stream = RefCell::new(TokenStream::new(INPUT, "", &SCANNERS, MAX_K).unwrap());
+            while !token_stream.borrow().all_input_consumed() {
+                let tok = token_stream.borrow_mut().lookahead(0).unwrap();
+                assert_ne!(tok.token_type, 118, "Invalid token found: {:?}", tok);
+                black_box(tok);
+                token_stream.borrow_mut().consume().unwrap();
             }
         });
     });
@@ -53,13 +98,13 @@ fn run_scanner(c: &mut Criterion) {
 criterion_group! {
     name = build;
     config = Criterion::default().measurement_time(Duration::from_secs(10));
-    targets = build_scanner, find_iter
+    targets = build_scanner, build_scanner_v1, find_iter
 }
 
 criterion_group! {
     name = scan;
     config = Criterion::default().sample_size(50);
-    targets = run_scanner
+    targets = run_scanner, run_scanner_v1
 }
 
 criterion_main!(build, scan);
