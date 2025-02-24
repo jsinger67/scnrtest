@@ -34,6 +34,19 @@ fn build_scanner(c: &mut Criterion) {
     });
 }
 
+fn build_scanner_uncached(c: &mut Criterion) {
+    c.bench_function("build_scanner_uncached", |b| {
+        b.iter(|| {
+            let _scanner = black_box(
+                ScannerBuilder::new()
+                    .add_scanner_modes(&SCANNER_MODES)
+                    .build_uncached()
+                    .unwrap(),
+            );
+        });
+    });
+}
+
 fn build_scanner_v1(c: &mut Criterion) {
     c.bench_function("build_scanner_v1", |b| {
         b.iter(|| {
@@ -98,7 +111,7 @@ fn run_scanner_v1(c: &mut Criterion) {
 criterion_group! {
     name = build;
     config = Criterion::default().measurement_time(Duration::from_secs(10));
-    targets = build_scanner, build_scanner_v1, find_iter
+    targets = build_scanner, build_scanner_uncached, build_scanner_v1, find_iter
 }
 
 criterion_group! {
