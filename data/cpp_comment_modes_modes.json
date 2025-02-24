@@ -1,17 +1,15 @@
 [
   {
     "name": "INITIAL",
-    "patterns": [["/\\*", 1]],
+    "patterns": [{ "pattern": "/\\*", "token_type": 1 }],
     "transitions": [[1, 1]]
   },
-    {
+  {
     "name": "COMMENT",
     "patterns": [
-      ["\\*/", 2],
-      [".", 3]
+      { "pattern": "\\*/", "token_type": 2 },
+      { "pattern": ".", "token_type": 3 }
     ],
-    "transitions": [
-      [2, 0]
-    ]
+    "transitions": [[2, 0]]
   }
 ]

@@ -2,7 +2,7 @@
   {
     "name": "INITIAL",
     "patterns": [
-      { "pattern": "/\\*([.--*]|\\*[^/])*\\*/", "token_type": 4 }
+      { "pattern": "/\\*([^*]|\\*[^/])*\\*/", "token_type": 4 }
     ],
     "transitions": []
   }
