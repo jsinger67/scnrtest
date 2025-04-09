@@ -9,6 +9,7 @@ env_logger = "0.11.6"
 
 # Use the regex_automata feature to enable the regex_automata crate
 # scnr = { version = "0.8.0", features = ["regex_automata"], default-features = false }
+# scnr = { path = "../scnr/scnr", version = "0.9.0", default-features = false }
 
 # Or use scnr with the default features
 scnr = "0.8.0"
@@ -28,3 +29,7 @@ debug = true
 [[bench]]
 name = "benchmark"
 harness = false
+
+[features]
+default = ["scnr/default"]
+regex_automata = ["scnr/regex_automata"]

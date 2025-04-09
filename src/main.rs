@@ -38,6 +38,8 @@ fn main() {
                 .build()
                 .unwrap();
             println!("Building the scanner from modes took {:?}", start.elapsed());
+
+            #[cfg(feature = "default")]
             if args.trace {
                 scanner.log_compiled_automata_as_dot().unwrap();
             }
@@ -47,6 +49,7 @@ fn main() {
                 // Create the target folder.
                 fs::create_dir_all(&dot).unwrap();
 
+                #[cfg(feature = "default")]
                 scanner
                     .generate_compiled_automata_as_dot(
                         modes_path.as_path().file_stem().unwrap().to_str().unwrap(),

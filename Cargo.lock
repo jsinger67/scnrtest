@@ -729,6 +729,7 @@ checksum = "ebfcd7c0893254c23586487f4582b607fea2f9ed4873ed76cb00d1d9c68d6a5e"
 dependencies = [
  "dot-writer",
  "log",
+ "regex-automata",
  "regex-syntax",
  "rustc-hash",
  "serde",
